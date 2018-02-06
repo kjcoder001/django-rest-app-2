@@ -8,11 +8,13 @@ from . import models
 class ListCourse(APIView):
 
     def get(self,request,format=None):
-        courses=models.Course.objects.all()# list of all objects
-        serializer=serializers.CourseSerializer(courses,many=True)# many lets the serializer know that multiple courses
-        # are being passed to serialize
-        # Serialization process is taking place here where text-string gets converted to json format
+        courses=models.Course.objects.all()# lists all the objects from the database
+
+        serializer=serializers.CourseSerializer(courses,many=True)
+        # many lets the serializer know that multiple courses are being passed to serialize
+        # Serialization process is taking place here where text-string(fields and their values from the databse) gets converted to json format
         return Response(serializer.data)
+        # serializer.data is essentially a dictionary . Rsponse() method renders it to json format.
 
     def post(self,request,format=None):
         serializer=serializers.CourseSerializer(data=request.data)
