@@ -77,8 +77,10 @@ class CourseViewSet(viewsets.ModelViewSet):
         course=self.get_object() # to ascertain the course which is under consideration
 
         serializer=serializers.ReviewSerializer(
-        course.reviews.all(),many=True # wtf is course.reviews.all()?!
-        )
+        course.reviews.all(),many=True)
+        # wtf is course.reviews.all()?!
+        #ans found from forums-->The Review model class has a Foreign key course with the related name 'reviews'. So
+        #'reviews' is used for the relation from Course back to Review.)
 
         return Response(serializer.data)
 
