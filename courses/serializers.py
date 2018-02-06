@@ -21,7 +21,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        fields=('id','course','name','email','review','rating','comment','created_at')
+        fields=('id','course','name','email','comment','rating','created_at')
         model=models.Review
         extra_kwargs={'email':{'write_only':True}}
         # the email of people or users shoudn't be displayed on the site
