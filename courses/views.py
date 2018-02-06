@@ -2,6 +2,10 @@ from rest_framework import generics # replaces API view and other classes from p
 from django.shortcuts import get_object_or_404
 from . import serializers
 from . import models
+from rest_framework.decorators import detail_route
+from rest_framework import viewsets
+from rest_framework.response import Response
+
 
 # This class takes care of listing and creating new courses
 class ListCreateCourse(generics.ListCreateAPIView):
@@ -56,3 +60,28 @@ class RetrieveUpdateDestroyReview(generics.RetrieveUpdateDestroyAPIView):
             course_id=self.kwargs.get('course_pk'),
             pk=self.kwargs.get('pk')
         )
+
+# VIEWSETS BEGIN HERE FOR VERSION 2 OF THE api
+# The url-->api/v2/courses/1/ would work just fine but api/v2/courses/1/reviews won't work because rest_framework viewsets
+# only generate typical crud views  from one model.So you can do crud operations only for one single model.
+
+# To run that url there is a provision of creating ad-hoc methods in a viewset by importing a decorator
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset=models.Course.objects.all()
+    serializer_class=serializers.CourseSerializer
+
+    @detail_route(methods=['get'])
+
+    def reviews(self,request,pk=None): # this method basically lists all the reviews for the course
+        course=self.get_object() # to ascertain the course which is under consideration
+
+        serializer=serializers.ReviewSerializer(
+        course.reviews.all(),many=True # wtf is course.reviews.all()?!
+        )
+
+        return Response(serializer.data)
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset=models.Review.objects.all()
+    serializer_class=serializers.ReviewSerializer
